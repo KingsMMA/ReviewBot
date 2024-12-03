@@ -27,7 +27,14 @@ export default class SetReviewLocationCommand extends BaseCommand {
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
 
-        const channel = interaction.options.getChannel('channel', true);
+        const channelOpt = interaction.options.getChannel('channel', true);
+        const channel = await interaction.guild!.channels.fetch(channelOpt.id)
+            .catch(() => null);
+        if (!channel)
+            return interaction.replyError('Invalid channel.');
+        if (!channel.isTextBased() || channel.isVoiceBased())
+            return interaction.replyError('Reviews can only be posted in text channels.');
+
         await this.client.main.mongo.setReviewChannel(interaction.guildId!, channel.id);
 
         return interaction.replySuccess(`Reviews will now be posted in <#${channel.id}>.`);
