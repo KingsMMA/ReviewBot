@@ -1,6 +1,5 @@
-import type {AutocompleteInteraction, ChatInputCommandInteraction, GuildTextBasedChannel} from 'discord.js';
-import {PermissionsBitField} from 'discord.js';
-import {ApplicationCommandOptionType, ApplicationCommandType} from 'discord-api-types/v10';
+import type { ChatInputCommandInteraction, GuildTextBasedChannel } from 'discord.js';
+import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord-api-types/v10';
 
 import type ReviewBot from '../../reviewBot';
 import KingsDevEmbedBuilder from '../../utils/kingsDevEmbedBuilder';
@@ -59,7 +58,10 @@ export default class ReviewCommand extends BaseCommand {
 
         const authorData = reviewData[interaction.user.id];
         if (authorData) {
-            const [channelId, messageId] = authorData.message_url.split('/').slice(-2);
+            const [
+                channelId, messageId
+            ] = authorData.message_url.split('/')
+                .slice(-2);
             const channel = await this.client.channels.fetch(channelId)
                 .catch(() => null);
             if (!channel)
@@ -75,7 +77,8 @@ export default class ReviewCommand extends BaseCommand {
         }
 
         const averageRating =
-            (Object.values(reviewData).reduce((total, review_data) => total + review_data.rating, 0) + rating) / (Object.keys(reviewData).length + 1);
+            (Object.values(reviewData)
+                .reduce((total, review_data) => total + review_data.rating, 0) + rating) / (Object.keys(reviewData).length + 1);
         const embed = new KingsDevEmbedBuilder()
             .setAuthor({
                 name: user.tag,
@@ -95,7 +98,9 @@ export default class ReviewCommand extends BaseCommand {
 
         const message = await (reviewChannel as GuildTextBasedChannel).send({
             content: `<@${user.id}>`,
-            embeds: [embed]
+            embeds: [
+                embed
+            ]
         })
             .catch(() => null);
         if (!message)

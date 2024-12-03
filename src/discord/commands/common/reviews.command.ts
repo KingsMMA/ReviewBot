@@ -1,6 +1,5 @@
-import type {AutocompleteInteraction, ChatInputCommandInteraction} from 'discord.js';
-import {PermissionsBitField} from 'discord.js';
-import {ApplicationCommandOptionType, ApplicationCommandType} from 'discord-api-types/v10';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord-api-types/v10';
 
 import type ReviewBot from '../../reviewBot';
 import KingsDevEmbedBuilder from '../../utils/kingsDevEmbedBuilder';
@@ -27,7 +26,8 @@ export default class reviewsCommand extends BaseCommand {
         await interaction.deferReply();
 
         const user = interaction.options.getUser('user', true);
-        const member = await interaction.guild!.members.fetch(user.id).catch(() => null);
+        const member = await interaction.guild!.members.fetch(user.id)
+            .catch(() => null);
         if (!member)
             return interaction.replyError('User not found.');
 
@@ -37,7 +37,8 @@ export default class reviewsCommand extends BaseCommand {
 
         const reviews = guildData.reviews[user.id];
         const averageRating =
-            (Object.values(reviews).reduce((total, review_data) => total + review_data.rating, 0)) / Object.keys(reviews).length;
+            (Object.values(reviews)
+                .reduce((total, review_data) => total + review_data.rating, 0)) / Object.keys(reviews).length;
         const embed = new KingsDevEmbedBuilder()
             .setTitle(`${member.displayName}'s Reviews`)
             .setColor(member.displayColor)
@@ -46,15 +47,21 @@ export default class reviewsCommand extends BaseCommand {
             }\n**Average Rating:** ${'⭐'.repeat(Math.round(averageRating))} (${averageRating.toFixed(2)})`)
             .addFields(
                 await Promise.all(
-                    Object.entries(reviews).map(async ([authorId, review_data]) => ({
-                        name: `${
-                            (await interaction.guild!.members.fetch(authorId).catch(() => null))?.displayName || 'Unknown'
-                        } (${authorId})`,
-                        value: `**Rating:** ${'⭐'.repeat(review_data.rating)} (${review_data.rating})\n**Review:** ${review_data.review}`,
-                    }))
+                    Object.entries(reviews)
+                        .map(async ([
+                            authorId, review_data
+                        ]) => ({
+                            name: `${
+                                (await interaction.guild!.members.fetch(authorId)
+                                    .catch(() => null))?.displayName || 'Unknown'
+                            } (${authorId})`,
+                            value: `**Rating:** ${'⭐'.repeat(review_data.rating)} (${review_data.rating})\n**Review:** ${review_data.review}`,
+                        }))
                 )
             );
-        return interaction.editReply({ embeds: [embed] });
+        return interaction.editReply({ embeds: [
+            embed
+        ] });
     }
 
 }

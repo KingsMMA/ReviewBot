@@ -1,8 +1,8 @@
+import type { Snowflake } from 'discord-api-types/globals';
 import type { Db } from 'mongodb';
 import { MongoClient } from 'mongodb';
 
 import type Main from '../main';
-import {Snowflake} from "discord-api-types/globals";
 
 export type GuildData = {
     guild_id: Snowflake,
